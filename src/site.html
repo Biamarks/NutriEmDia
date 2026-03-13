@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutri em Dia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2d5a27;
+            --primary-light: #4a8c42;
+            --accent: #f4a261;
+            --text: #333;
+            --bg: #f9fbf9;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--white);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--primary-light);
+            font-weight: 400;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=1200') center/cover;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-container {
+            margin-top: 2rem;
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 5px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .search-container input {
+            flex: 1;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-container button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 5%;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        /* Filtros */
+        .filters {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        .filters h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 0.5rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        /* Grid de Receitas */
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-tag {
+            background: var(--bg);
+            color: var(--primary);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .card-title {
+            margin: 0.8rem 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+        }
+
+        .card-info {
+            font-size: 0.85rem;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Detalhes da Receita */
+        .recipe-detail {
+            display: none;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .detail-header {
+            position: relative;
+            height: 400px;
+        }
+
+        .detail-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .detail-body {
+            padding: 3rem;
+        }
+
+        .detail-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Layout de Conteúdo da Receita */
+        .recipe-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .recipe-main-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        /* Tabela Nutricional */
+        .nutrition-table {
+            background: #fdfcfb;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 100px;
+        }
+
+        .nutrition-table h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            border-bottom: 2px solid #2d5a27;
+            display: inline-block;
+        }
+
+        .nutrition-header-info {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .nutri-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .nutri-val {
+            display: block;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .nutri-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .ingredients h3, .instructions h3 {
+            margin-bottom: 1.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .ingredients-list {
+            list-style: none;
+        }
+
+        .ingredients-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .instructions-steps {
+            list-style: none;
+            counter-reset: steps;
+        }
+
+        .instructions-steps li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 1.5rem;
+        }
+
+        .instructions-steps li::before {
+            counter-increment: steps;
+            content: counter(steps);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem;
+            background: var(--white);
+            margin-top: 5rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .main-layout, .recipe-content {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 { font-size: 2rem; }
+            .detail-body { padding: 1.5rem; }
+            .nutrition-grid { grid-template-columns: repeat(2, 1fr); }
+            .nutrition-table { position: static; margin-top: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <header id="mainHeader">
+        <nav class="navbar">
+            <div class="logo" onclick="irParaHome()">Nutri <span>em Dia</span></div>
+            <ul class="nav-links">
+                <li><a onclick="irParaHome()">Home</a></li>
+            </ul>
+        </nav>
+        
+        <section class="hero" id="heroSection">
+            <h1>Sua Saúde em Dia</h1>
+            <p>Receitas exclusivas elaboradas para o seu bem-estar.</p>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Busque por ingrediente ou nome...">
+                <button onclick="filtrar()">🔍 Buscar</button>
+            </div>
+        </section>
+    </header>
+
+    <main class="container">
+        <div id="homeView" class="main-layout">
+            <aside class="filters">
+                <h3>Filtros</h3>
+                <div class="filter-group">
+                    <label>Categoria</label>
+                    <select id="filterCategoria" onchange="filtrar()">
+                        <option value="">Todas</option>
+                        <!-- Dinâmico -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Perfil Nutricional</label>
+                    <select id="filterPaciente" onchange="filtrar()">
+                        <option value="">Todos</option>
+                        <!-- Dinâmico -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Contém Ingrediente</label>
+                    <select id="filterContemIngrediente" onchange="filtrar()">
+                        <option value="">Qualquer um</option>
+                        <!-- Dinâmico -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Excluir Ingrediente</label>
+                    <select id="filterExcluiIngrediente" onchange="filtrar()">
+                        <option value="">Nenhum</option>
+                        <!-- Dinâmico -->
+                    </select>
+                </div>
+            </aside>
+
+            <section class="recipes-grid" id="recipesGrid">
+                <!-- Preenchido via JS -->
+            </section>
+        </div>
+
+        <article id="detailView" class="recipe-detail">
+            <!-- Conteúdo dinâmico -->
+        </article>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Nutri em Dia - Por Drª Fabiana Marques | Nutricionista</p>
+    </footer>
+
+    <script>
+        const receitas = [
+            {
+                id: 1,
+                nome: "Smoothie de Açaí Proteico",
+                categoria: "Café da Manhã",
+                perfil: ["Atleta", "Vegano"],
+                tempo: "10 min",
+                rendimento: "1 porção",
+                kcalTotal: "320 kcal",
+                kcalPorcao: "320 kcal",
+                img: "https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&q=80&w=400",
+                nutricao: { proteina: "24g", carbo: "42g", gordura: "8g", fibras: "12g" },
+                ingredientes: [
+                    { item: "Polpa de Açaí puro", qtd: "200g" },
+                    { item: "Proteína isolada (baunilha)", qtd: "1 scoop" },
+                    { item: "Banana congelada", qtd: "1 un" },
+                    { item: "Água de coco", qtd: "150ml" },
+                    { item: "Mix de castanhas", qtd: "1 colher" }
+                ],
+                preparo: [
+                    "Bata o açaí, a banana e a água de coco no liquidificador.",
+                    "Adicione o scoop de proteína e bata por mais 30 segundos.",
+                    "Sirva em uma tigela e decore com as castanhas picadas."
+                ]
+            },
+            {
+                id: 2,
+                nome: "Salmão com Crosta de Ervas",
+                categoria: "Almoço",
+                perfil: ["Low Carb", "Atleta"],
+                tempo: "25 min",
+                rendimento: "1 porção",
+                kcalTotal: "450 kcal",
+                kcalPorcao: "450 kcal",
+                img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&q=80&w=400",
+                nutricao: { proteina: "38g", carbo: "5g", gordura: "28g", fibras: "3g" },
+                ingredientes: [
+                    { item: "Filé de Salmão", qtd: "200g" },
+                    { item: "Amêndoas trituradas", qtd: "2 colheres" },
+                    { item: "Salsa e Alecrim", qtd: "a gosto" },
+                    { item: "Azeite de Oliva", qtd: "1 colher" },
+                    { item: "Limão siciliano", qtd: "1/2 un" }
+                ],
+                preparo: [
+                    "Tempere o salmão com sal, pimenta e limão.",
+                    "Misture as amêndoas com as ervas picadas e o azeite.",
+                    "Cubra o topo do peixe com essa mistura pressionando levemente.",
+                    "Leve ao forno pré-aquecido a 200°C por cerca de 15 a 20 minutos."
+                ]
+            },
+            {
+                id: 3,
+                nome: "Bowl Vegano de Quinoa",
+                categoria: "Almoço",
+                perfil: ["Vegano", "Diabético"],
+                tempo: "20 min",
+                rendimento: "2 porções",
+                kcalTotal: "760 kcal",
+                kcalPorcao: "380 kcal",
+                img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=400",
+                nutricao: { proteina: "14g", carbo: "52g", gordura: "12g", fibras: "15g" },
+                ingredientes: [
+                    { item: "Quinoa cozida", qtd: "1 xícara" },
+                    { item: "Grão de bico cozido", qtd: "1/2 xícara" },
+                    { item: "Abacate picado", qtd: "1/4 un" },
+                    { item: "Folhas de espinafre", qtd: "1 punhado" },
+                    { item: "Sementes de girassol", qtd: "1 colher" }
+                ],
+                preparo: [
+                    "Em um bowl grande, coloque a base de quinoa e espinafre.",
+                    "Adicione o grão de bico e o abacate nas laterais.",
+                    "Tempere com um fio de azeite, limão e finalize com as sementes."
+                ]
+            },
+            {
+                id: 4,
+                nome: "Omelete de Espinafre e Ricota",
+                categoria: "Jantar",
+                perfil: ["Low Carb", "Diabético"],
+                tempo: "15 min",
+                rendimento: "1 porção",
+                kcalTotal: "290 kcal",
+                kcalPorcao: "290 kcal",
+                img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&q=80&w=400",
+                nutricao: { proteina: "22g", carbo: "6g", gordura: "18g", fibras: "4g" },
+                ingredientes: [
+                    { item: "Ovos orgânicos", qtd: "3 un" },
+                    { item: "Ricota fresca", qtd: "50g" },
+                    { item: "Folhas de espinafre", qtd: "1 xícara" },
+                    { item: "Cebola roxa picada", qtd: "2 colheres" }
+                ],
+                preparo: [
+                    "Bata os ovos levemente com uma pitada de sal.",
+                    "Refogue a cebola e o espinafre em uma perguntadeira antiaderente.",
+                    "Despeje os ovos e adicione a ricota esfarelada por cima.",
+                    "Dobre a omelete ao meio quando estiver firme e doure dos dois lados."
+                ]
+            },
+            {
+                id: 5,
+                nome: "Cookies de Aveia e Banana",
+                categoria: "Lanche",
+                perfil: ["Vegano", "Diabético"],
+                tempo: "15 min",
+                rendimento: "12 unidades",
+                kcalTotal: "1440 kcal",
+                kcalPorcao: "120 kcal",
+                img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&q=80&w=400",
+                nutricao: { proteina: "4g", carbo: "22g", gordura: "3g", fibras: "6g" },
+                ingredientes: [
+                    { item: "Banana madura", qtd: "2 un" },
+                    { item: "Aveia em flocos", qtd: "1 xícara" },
+                    { item: "Canela em pó", qtd: "1 colher chá" },
+                    { item: "Gotas de chocolate 70%", qtd: "2 colheres" }
+                ],
+                preparo: [
+                    "Amasse bem as bananas em uma tigela.",
+                    "Misture a aveia e a canela até formar uma massa homogênea.",
+                    "Incorpore o chocolate.",
+                    "Molde os cookies e leve ao forno por 15 minutos a 180°C."
+                ]
+            }
+        ];
+
+        const grid = document.getElementById('recipesGrid');
+        const homeView = document.getElementById('homeView');
+        const detailView = document.getElementById('detailView');
+        const heroSection = document.getElementById('heroSection');
+        const searchInput = document.getElementById('searchInput');
+
+        function popularFiltros() {
+            const categorias = new Set();
+            const perfis = new Set();
+            const ingredientes = new Set();
+
+            receitas.forEach(r => {
+                categorias.add(r.categoria);
+                r.perfil.forEach(p => perfis.add(p));
+                r.ingredientes.forEach(ing => ingredientes.add(ing.item));
+            });
+
+            // Gerar opções ordenadas alfabeticamente
+            const catsOrdenadas = Array.from(categorias).sort((a, b) => a.localeCompare(b));
+            const perfisOrdenados = Array.from(perfis).sort((a, b) => a.localeCompare(b));
+            const ingsOrdenados = Array.from(ingredientes).sort((a, b) => a.localeCompare(b));
+
+            const selectCat = document.getElementById('filterCategoria');
+            const selectPer = document.getElementById('filterPaciente');
+            const selectContem = document.getElementById('filterContemIngrediente');
+            const selectExclui = document.getElementById('filterExcluiIngrediente');
+
+            catsOrdenadas.forEach(val => {
+                const opt = new Option(val, val);
+                selectCat.add(opt);
+            });
+
+            perfisOrdenados.forEach(val => {
+                const opt = new Option(val, val);
+                selectPer.add(opt);
+            });
+
+            ingsOrdenados.forEach(val => {
+                selectContem.add(new Option(val, val));
+                selectExclui.add(new Option(val, val));
+            });
+        }
+
+        function renderizarReceitas(lista) {
+            grid.innerHTML = '';
+            lista.forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => verDetalhes(r.id);
+                card.innerHTML = `
+                    <img src="${r.img}" alt="${r.nome}" class="card-img">
+                    <div class="card-content">
+                        <span class="card-tag">${r.categoria}</span>
+                        <h2 class="card-title">${r.nome}</h2>
+                        <div class="card-info">
+                            <span>⏱️ ${r.tempo}</span>
+                            <span>🔥 ${r.kcalPorcao} / porção</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function verDetalhes(id) {
+            const r = receitas.find(item => item.id === id);
+            if (!r) return;
+
+            homeView.style.display = 'none';
+            heroSection.style.display = 'none';
+            detailView.style.display = 'block';
+            window.scrollTo(0, 0);
+
+            detailView.innerHTML = `
+                <div class="detail-header">
+                    <button class="back-btn" onclick="irParaHome()">← Voltar</button>
+                    <img src="${r.img}" class="detail-img">
+                </div>
+                <div class="detail-body">
+                    <h1 class="detail-title">${r.nome}</h1>
+                    <div class="detail-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Categoria</span>
+                            <span class="meta-value">${r.categoria}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Preparo</span>
+                            <span class="meta-value">${r.tempo}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Rendimento</span>
+                            <span class="meta-value">${r.rendimento}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Perfil Nutricional</span>
+                            <span class="meta-value">${r.perfil.join(", ")}</span>
+                        </div>
+                    </div>
+
+                    <div class="recipe-content">
+                        <div class="recipe-main-info">
+                            <section class="ingredients">
+                                <h3>Ingredientes</h3>
+                                <ul class="ingredients-list">
+                                    ${r.ingredientes.map(ing => `
+                                        <li>
+                                            <span>${ing.item}</span>
+                                            <strong>${ing.qtd}</strong>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </section>
+                            
+                            <section class="instructions">
+                                <h3>Modo de Preparo</h3>
+                                <ol class="instructions-steps">
+                                    ${r.preparo.map(passo => `<li>${passo}</li>`).join('')}
+                                </ol>
+                            </section>
+                        </div>
+
+                        <aside class="nutrition-sidebar">
+                            <div class="nutrition-table">
+                                <h3>Informação Nutricional</h3>
+                                <span class="nutrition-header-info">Valores médios por porção de ${r.nome}</span>
+                                <div class="nutrition-grid">
+                                    <div class="nutri-item" style="grid-column: span 2; border: 1px solid var(--primary);">
+                                        <span class="nutri-val">${r.kcalPorcao}</span>
+                                        <span class="nutri-label">Valor Energético</span>
+                                    </div>
+                                    <div class="nutri-item">
+                                        <span class="nutri-val">${r.nutricao.proteina}</span>
+                                        <span class="nutri-label">Proteínas</span>
+                                    </div>
+                                    <div class="nutri-item">
+                                        <span class="nutri-val">${r.nutricao.carbo}</span>
+                                        <span class="nutri-label">Carbos</span>
+                                    </div>
+                                    <div class="nutri-item">
+                                        <span class="nutri-val">${r.nutricao.gordura}</span>
+                                        <span class="nutri-label">Gorduras</span>
+                                    </div>
+                                    <div class="nutri-item">
+                                        <span class="nutri-val">${r.nutricao.fibras}</span>
+                                        <span class="nutri-label">Fibras</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            `;
+        }
+
+        function irParaHome() {
+            detailView.style.display = 'none';
+            homeView.style.display = 'grid';
+            heroSection.style.display = 'flex';
+        }
+
+        function filtrar() {
+            const termo = searchInput.value.toLowerCase();
+            const categoria = document.getElementById('filterCategoria').value;
+            const perfil = document.getElementById('filterPaciente').value;
+            const contemIng = document.getElementById('filterContemIngrediente').value;
+            const excluiIng = document.getElementById('filterExcluiIngrediente').value;
+
+            const filtradas = receitas.filter(r => {
+                const listaIngredientes = r.ingredientes.map(i => i.item);
+                
+                // Ajuste solicitado: A busca agora filtra por Nome OU lista de ingredientes (descrição)
+                const bateBusca = r.nome.toLowerCase().includes(termo) || 
+                                  listaIngredientes.some(ing => ing.toLowerCase().includes(termo));
+                
+                const bateCat = categoria === "" || r.categoria === categoria;
+                const batePerfil = perfil === "" || r.perfil.includes(perfil);
+                
+                const bateContem = contemIng === "" || listaIngredientes.includes(contemIng);
+                const bateExclui = excluiIng === "" || !listaIngredientes.includes(excluiIng);
+
+                return bateBusca && bateCat && batePerfil && bateContem && bateExclui;
+            });
+
+            renderizarReceitas(filtradas);
+            irParaHome();
+        }
+
+        searchInput.addEventListener('keyup', filtrar);
+
+        window.onload = () => {
+            popularFiltros();
+            renderizarReceitas(receitas);
+        };
+    </script>
+</body>
+</html>
